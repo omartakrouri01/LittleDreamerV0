@@ -17,7 +17,13 @@ const plexArabic = IBM_Plex_Sans_Arabic({
   display: "swap",
 });
 
+// Vercel sets VERCEL_URL automatically at build/runtime; falls back to
+// localhost for local dev. Needed so the file-based default OG image
+// resolves to an absolute URL for social previews.
+const siteUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: `${SHOP_NAME_EN} • ${SHOP_TAGLINE}`,
   description: "أجمل الألعاب والهدايا للأطفال، بألوان حالمة وهادئة. تسوّقي الآن واطلبي عبر إنستغرام.",
 };

@@ -7,6 +7,7 @@ import { cldUrl } from "@/lib/cloudinary";
 import { formatAgeRange } from "@/lib/age";
 import { categoryColor } from "@/lib/categories";
 import { PriceBadge } from "./PriceBadge";
+import { OrderButtons } from "./OrderButtons";
 
 /** Deterministic small tilt (-4..4deg) from the toy id, stable across re-renders. */
 function rotationForId(id: string): number {
@@ -20,13 +21,11 @@ interface ToyCardProps {
   toy: Toy;
   /** Opens the product modal (card body click). */
   onOpen?: () => void;
-  /** Triggers the order flow directly from the grid (order button click). */
-  onOrder?: () => void;
   priority?: boolean;
   className?: string;
 }
 
-export function ToyCard({ toy, onOpen, onOrder, priority = false, className }: ToyCardProps) {
+export function ToyCard({ toy, onOpen, priority = false, className }: ToyCardProps) {
   const rotation = rotationForId(toy.id);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
@@ -40,7 +39,13 @@ export function ToyCard({ toy, onOpen, onOrder, priority = false, className }: T
     <div
       role="button"
       tabIndex={0}
-      onClick={onOpen}
+      onClick={(e) => {
+        // Ensure this card is document.activeElement before opening, so
+        // the modal can reliably restore focus here on close (click focus
+        // behaviour on non-form elements varies across browsers).
+        e.currentTarget.focus();
+        onOpen?.();
+      }}
       onKeyDown={handleKeyDown}
       aria-label={toy.name}
       className={`group relative flex cursor-pointer flex-col overflow-hidden rounded-3xl bg-cloud shadow-sm transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lg ${className ?? ""}`}
@@ -78,16 +83,9 @@ export function ToyCard({ toy, onOpen, onOrder, priority = false, className }: T
           {toy.sex ? ` · ${toy.sex}` : ""}
         </p>
 
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onOrder?.();
-          }}
-          className="mt-1 w-full rounded-full bg-berry px-3 py-2 text-xs font-semibold text-white transition-transform duration-150 active:scale-[0.97]"
-        >
-          اطلب عبر إنستغرام
-        </button>
+        <div onClick={(e) => e.stopPropagation()} className="mt-1">
+          <OrderButtons toy={toy} />
+        </div>
       </div>
     </div>
   );
