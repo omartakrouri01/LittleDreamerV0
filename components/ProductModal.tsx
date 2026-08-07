@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { Toy } from "@/lib/sheets";
 import { cldUrl } from "@/lib/cloudinary";
 import { formatAgeRange } from "@/lib/age";
@@ -24,6 +24,27 @@ export function ProductModal({ toy, onClose, returnFocusRef }: ProductModalProps
   const images = [toy.image, ...toy.images];
   const [activeImage, setActiveImage] = useState(0);
   const [shareLabel, setShareLabel] = useState("مشاركة");
+
+  // Enter/exit transition: mount hidden, flip to visible next frame; on
+  // close, animate back out before actually removing ?toy= (and thus
+  // unmounting). Skipped entirely under prefers-reduced-motion.
+  const reducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const [visible, setVisible] = useState(reducedMotion);
+  useEffect(() => {
+    if (reducedMotion) return;
+    const id = requestAnimationFrame(() => setVisible(true));
+    return () => cancelAnimationFrame(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const requestClose = useCallback(() => {
+    if (reducedMotion) {
+      onClose();
+      return;
+    }
+    setVisible(false);
+    window.setTimeout(onClose, 200);
+  }, [onClose, reducedMotion]);
 
   // Body scroll lock while the modal is open.
   useEffect(() => {
@@ -48,7 +69,7 @@ export function ProductModal({ toy, onClose, returnFocusRef }: ProductModalProps
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") {
-        onClose();
+        requestClose();
         return;
       }
       if (e.key !== "Tab") return;
@@ -68,7 +89,7 @@ export function ProductModal({ toy, onClose, returnFocusRef }: ProductModalProps
     }
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [onClose]);
+  }, [requestClose]);
 
   async function handleShare() {
     const url = `${window.location.origin}${window.location.pathname}?toy=${encodeURIComponent(toy.id)}`;
@@ -91,14 +112,22 @@ export function ProductModal({ toy, onClose, returnFocusRef }: ProductModalProps
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-plum/60 p-0 sm:items-center sm:p-4" onClick={onClose} role="presentation">
+    <div
+      className={`fixed inset-0 z-50 flex items-end justify-center bg-plum/60 p-0 transition-opacity duration-200 ease-out sm:items-center sm:p-4 ${
+        visible ? "opacity-100" : "opacity-0"
+      }`}
+      onClick={requestClose}
+      role="presentation"
+    >
       <div
         ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-label={toy.name}
         onClick={(e) => e.stopPropagation()}
-        className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-t-3xl bg-cloud shadow-2xl sm:rounded-3xl"
+        className={`max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-t-3xl bg-cloud shadow-2xl transition-[opacity,transform] duration-200 ease-out sm:rounded-3xl ${
+          visible ? "translate-y-0 scale-100 opacity-100" : "translate-y-3 scale-[0.96] opacity-0"
+        }`}
       >
         <div className="flex items-center justify-between border-b border-petal/40 p-4">
           <button type="button" onClick={handleShare} className="rounded-full px-3 py-1.5 text-sm font-semibold text-berry hover:bg-blush">
@@ -107,7 +136,7 @@ export function ProductModal({ toy, onClose, returnFocusRef }: ProductModalProps
           <button
             ref={closeButtonRef}
             type="button"
-            onClick={onClose}
+            onClick={requestClose}
             aria-label="إغلاق"
             className="grid h-9 w-9 place-items-center rounded-full text-plum hover:bg-blush"
           >

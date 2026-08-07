@@ -1,6 +1,9 @@
 "use client";
 
 import type { CategoryInfo } from "@/lib/categories";
+import { WordReveal } from "./reveal/WordReveal";
+import { RevealDivider } from "./reveal/RevealDivider";
+import { Reveal } from "./reveal/Reveal";
 
 interface CategoryChipsProps {
   categories: CategoryInfo[];
@@ -19,8 +22,11 @@ export function CategoryChips({ categories, active, onSelect, gridId }: Category
 
   return (
     <section className="px-4 py-6 sm:px-6">
-      <h2 className="mb-4 text-center font-display text-xl font-extrabold text-plum sm:text-2xl">تسوق حسب الفئة</h2>
-      <div className="mx-auto flex max-w-4xl gap-2 overflow-x-auto pb-2 sm:flex-wrap sm:justify-center sm:overflow-visible sm:pb-0">
+      <div className="mx-auto mb-4 max-w-xs text-center">
+        <WordReveal as="h2" text="تسوق حسب الفئة" className="font-display text-xl font-extrabold text-plum sm:text-2xl" />
+        <RevealDivider className="mx-auto mt-1 h-3 w-24" />
+      </div>
+      <Reveal className="mx-auto flex max-w-4xl gap-2 overflow-x-auto pb-2 sm:flex-wrap sm:justify-center sm:overflow-visible sm:pb-0">
         {categories.map((cat) => {
           const isActive = active === cat.name;
           return (
@@ -37,7 +43,7 @@ export function CategoryChips({ categories, active, onSelect, gridId }: Category
             </button>
           );
         })}
-      </div>
+      </Reveal>
     </section>
   );
 }

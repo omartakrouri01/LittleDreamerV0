@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Baloo_Bhaijaan_2, IBM_Plex_Sans_Arabic } from "next/font/google";
 import { SHOP_NAME_EN, SHOP_TAGLINE } from "@/lib/config";
+import { Preloader } from "@/components/Preloader";
 import "./globals.css";
 
 const baloo = Baloo_Bhaijaan_2({
@@ -35,7 +36,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       dir="rtl"
       className={`${baloo.variable} ${plexArabic.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-blush">{children}</body>
+      <body className="min-h-full flex flex-col bg-blush">
+        <Preloader />
+        {children}
+      </body>
     </html>
   );
 }

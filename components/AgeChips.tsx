@@ -2,6 +2,9 @@
 
 import { AGE_BUCKETS } from "@/lib/age";
 import { Cloud } from "./deco/Cloud";
+import { WordReveal } from "./reveal/WordReveal";
+import { RevealDivider } from "./reveal/RevealDivider";
+import { Reveal } from "./reveal/Reveal";
 
 const VARIANTS: Array<"a" | "b" | "c"> = ["a", "b", "c"];
 
@@ -19,8 +22,11 @@ export function AgeChips({ active, onSelect, gridId }: AgeChipsProps) {
 
   return (
     <section className="px-4 py-6 sm:px-6">
-      <h2 className="mb-4 text-center font-display text-xl font-extrabold text-plum sm:text-2xl">تسوق حسب العمر</h2>
-      <div className="mx-auto flex max-w-2xl flex-wrap items-center justify-center gap-2">
+      <div className="mx-auto mb-4 max-w-xs text-center">
+        <WordReveal as="h2" text="تسوق حسب العمر" className="font-display text-xl font-extrabold text-plum sm:text-2xl" />
+        <RevealDivider className="mx-auto mt-1 h-3 w-24" />
+      </div>
+      <Reveal className="mx-auto flex max-w-2xl flex-wrap items-center justify-center gap-2">
         {AGE_BUCKETS.map((bucket, i) => {
           const isActive = active === bucket.id;
           return (
@@ -38,7 +44,7 @@ export function AgeChips({ active, onSelect, gridId }: AgeChipsProps) {
             </button>
           );
         })}
-      </div>
+      </Reveal>
     </section>
   );
 }

@@ -4,6 +4,7 @@ import { useRef } from "react";
 import type { Toy } from "@/lib/sheets";
 import { ToyCard } from "./ToyCard";
 import { CloudDivider } from "./deco/CloudDivider";
+import { WordReveal } from "./reveal/WordReveal";
 
 interface OutdoorShelfProps {
   toys: Toy[];
@@ -25,7 +26,7 @@ export function OutdoorShelf({ toys, onOpen }: OutdoorShelfProps) {
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="font-display text-xl font-extrabold text-plum sm:text-2xl">ألعاب خارجية</h2>
+          <WordReveal as="h2" text="ألعاب خارجية" className="font-display text-xl font-extrabold text-plum sm:text-2xl" />
           <div className="hidden gap-2 sm:flex">
             <button
               type="button"
@@ -47,8 +48,8 @@ export function OutdoorShelf({ toys, onOpen }: OutdoorShelfProps) {
         </div>
 
         <div ref={scrollerRef} className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2">
-          {toys.map((toy) => (
-            <ToyCard key={toy.id} toy={toy} onOpen={() => onOpen(toy)} className="w-44 shrink-0 snap-start sm:w-56" />
+          {toys.map((toy, i) => (
+            <ToyCard key={toy.id} toy={toy} onOpen={() => onOpen(toy)} index={i} className="w-44 shrink-0 snap-start sm:w-56" />
           ))}
         </div>
       </div>

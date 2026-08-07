@@ -58,7 +58,7 @@ export function ShopExperience({ toys, outdoorToys, categories, sexValues }: Sho
         ) : (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {filteredToys.map((toy, i) => (
-              <ToyCard key={toy.id} toy={toy} onOpen={() => handleOpen(toy)} priority={i < 4} />
+              <ToyCard key={toy.id} toy={toy} onOpen={() => handleOpen(toy)} priority={i < 4} index={i % 4} />
             ))}
           </div>
         )}

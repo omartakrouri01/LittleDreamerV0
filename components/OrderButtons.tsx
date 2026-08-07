@@ -75,7 +75,7 @@ export function OrderButtons({ toy, className }: OrderButtonsProps) {
         typeof document !== "undefined" &&
         createPortal(
           <div
-            className="fixed inset-0 z-100 flex items-center justify-center bg-plum/60 p-4"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-plum/60 p-4"
             onClick={() => setOverlay(null)}
             role="dialog"
             aria-modal="true"

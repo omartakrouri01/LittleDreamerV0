@@ -11,6 +11,9 @@ interface PriceBadgeProps {
   /** Small deterministic tilt in degrees, derived from the toy id by the caller. */
   rotation?: number;
   className?: string;
+  /** Drives the settle-in animation (scale 0.9->1, tilt easing into place) as the card reveals. Defaults to true (already-settled) for non-grid usage like the modal. */
+  revealed?: boolean;
+  settleDelayMs?: number;
 }
 
 /**
@@ -18,10 +21,16 @@ interface PriceBadgeProps {
  * cloud with a gold outline and soft shadow. Used on grid cards and in the
  * product modal.
  */
-export function PriceBadge({ price, rotation = 0, className }: PriceBadgeProps) {
-  const style: CSSProperties = { transform: `rotate(${rotation}deg)` };
+export function PriceBadge({ price, rotation = 0, className, revealed = true, settleDelayMs = 0 }: PriceBadgeProps) {
+  const style: CSSProperties = {
+    transform: `rotate(${revealed ? rotation : rotation * 0.35}deg) scale(${revealed ? 1 : 0.9})`,
+    transitionDelay: `${settleDelayMs}ms`,
+  };
   return (
-    <div className={`relative h-[38px] w-[70px] drop-shadow-[0_3px_6px_rgba(62,34,55,0.25)] ${className ?? ""}`} style={style}>
+    <div
+      className={`relative h-[38px] w-[70px] drop-shadow-[0_3px_6px_rgba(62,34,55,0.25)] transition-transform duration-500 ease-out ${className ?? ""}`}
+      style={style}
+    >
       <svg viewBox="0 0 140 76" className="absolute inset-0 h-full w-full" aria-hidden="true">
         <path d={CLOUD_PATH} fill="var(--cloud)" stroke="var(--gold)" strokeWidth="4" strokeLinejoin="round" />
       </svg>

@@ -6,8 +6,10 @@ import type { Toy } from "@/lib/sheets";
 import { cldUrl } from "@/lib/cloudinary";
 import { formatAgeRange } from "@/lib/age";
 import { categoryColor } from "@/lib/categories";
+import { useReveal } from "@/hooks/useReveal";
 import { PriceBadge } from "./PriceBadge";
 import { OrderButtons } from "./OrderButtons";
+import { Star } from "./deco/Star";
 
 /** Deterministic small tilt (-4..4deg) from the toy id, stable across re-renders. */
 function rotationForId(id: string): number {
@@ -23,10 +25,14 @@ interface ToyCardProps {
   onOpen?: () => void;
   priority?: boolean;
   className?: string;
+  /** Position within its grid/row, used to cap the reveal stagger at ~300ms. */
+  index?: number;
 }
 
-export function ToyCard({ toy, onOpen, priority = false, className }: ToyCardProps) {
+export function ToyCard({ toy, onOpen, priority = false, className, index = 0 }: ToyCardProps) {
   const rotation = rotationForId(toy.id);
+  const { ref, revealed } = useReveal<HTMLDivElement>();
+  const delayMs = Math.min(index * 60, 300);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter" || e.key === " ") {
@@ -37,6 +43,7 @@ export function ToyCard({ toy, onOpen, priority = false, className }: ToyCardPro
 
   return (
     <div
+      ref={ref}
       role="button"
       tabIndex={0}
       onClick={(e) => {
@@ -48,7 +55,10 @@ export function ToyCard({ toy, onOpen, priority = false, className }: ToyCardPro
       }}
       onKeyDown={handleKeyDown}
       aria-label={toy.name}
-      className={`group relative flex cursor-pointer flex-col overflow-hidden rounded-3xl bg-cloud shadow-sm transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lg ${className ?? ""}`}
+      style={{ transitionDelay: revealed ? `${delayMs}ms` : "0ms" }}
+      className={`group relative flex cursor-pointer flex-col overflow-hidden rounded-3xl bg-cloud shadow-sm transition-[opacity,transform,box-shadow] duration-500 ease-out hover:-translate-y-1 hover:shadow-lg ${
+        revealed ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+      } ${className ?? ""}`}
     >
       <div className="relative aspect-square w-full overflow-hidden bg-cloud p-3">
         <Image
@@ -60,11 +70,20 @@ export function ToyCard({ toy, onOpen, priority = false, className }: ToyCardPro
           priority={priority}
           loading={priority ? undefined : "lazy"}
         />
-        <PriceBadge price={toy.price} rotation={rotation} className="absolute top-2 start-2 z-10" />
+        <PriceBadge
+          price={toy.price}
+          rotation={rotation}
+          revealed={revealed}
+          settleDelayMs={delayMs + 120}
+          className="absolute top-2 start-2 z-10"
+        />
 
-        {/* Star sparkle on hover (Step 4 wires the reveal timing; static here). */}
-        <span className="pointer-events-none absolute bottom-2 end-2 text-gold opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-          ✦
+        {/* Star sparkle on hover, near the opposite corner from the price badge. */}
+        <span className="pointer-events-none absolute bottom-3 end-3 text-gold opacity-0 transition-[opacity,transform] duration-300 group-hover:opacity-100 group-hover:scale-100 scale-75">
+          <Star className="h-4 w-4" />
+        </span>
+        <span className="pointer-events-none absolute bottom-6 end-8 text-gold opacity-0 transition-[opacity,transform] delay-75 duration-300 group-hover:opacity-70 group-hover:scale-100 scale-75">
+          <Star className="h-2.5 w-2.5" />
         </span>
       </div>
 
