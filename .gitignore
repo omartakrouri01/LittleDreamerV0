@@ -37,6 +37,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# throwaway local QA placeholder images (Cloudinary is unreachable from this sandbox)
+/public/dev-placeholder/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
