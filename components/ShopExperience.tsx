@@ -13,8 +13,20 @@ import { FilterBar } from "./FilterBar";
 import { ToyCard } from "./ToyCard";
 import { EmptyState } from "./EmptyState";
 import { ProductModal } from "./ProductModal";
+import { PRODUCT_GRID_ID as GRID_ID } from "@/lib/constants";
 
-const GRID_ID = "product-grid";
+/**
+ * Column count and wrapper width for the current result count. With the shop's
+ * real catalogue (one product today) a fixed 2/3/4-col grid stranded the single
+ * card in a mostly-empty row; this keeps a small catalogue — or a single search
+ * hit — looking deliberate, and falls through to the full responsive grid at 4+.
+ */
+function gridLayoutFor(count: number): string {
+  if (count === 1) return "grid-cols-1 max-w-[260px]";
+  if (count === 2) return "grid-cols-2 max-w-[540px]";
+  if (count === 3) return "grid-cols-2 sm:grid-cols-3 max-w-[820px]";
+  return "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4";
+}
 
 interface ShopExperienceProps {
   toys: Toy[];
@@ -56,7 +68,7 @@ export function ShopExperience({ toys, outdoorToys, categories, sexValues }: Sho
         {filteredToys.length === 0 ? (
           <EmptyState onClear={clearAll} />
         ) : (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          <div className={`mx-auto grid gap-4 ${gridLayoutFor(filteredToys.length)}`}>
             {filteredToys.map((toy, i) => (
               <ToyCard key={toy.id} toy={toy} onOpen={() => handleOpen(toy)} priority={i < 4} index={i % 4} />
             ))}

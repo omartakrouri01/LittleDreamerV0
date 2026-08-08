@@ -32,7 +32,7 @@ export function OutdoorShelf({ toys, onOpen }: OutdoorShelfProps) {
               type="button"
               onClick={() => scrollBy(1)}
               aria-label="السابق"
-              className="grid h-9 w-9 place-items-center rounded-full bg-cloud text-plum shadow-sm transition-transform active:scale-90"
+              className="grid h-11 w-11 place-items-center rounded-full bg-cloud text-plum shadow-sm transition-transform active:scale-90"
             >
               ›
             </button>
@@ -40,7 +40,7 @@ export function OutdoorShelf({ toys, onOpen }: OutdoorShelfProps) {
               type="button"
               onClick={() => scrollBy(-1)}
               aria-label="التالي"
-              className="grid h-9 w-9 place-items-center rounded-full bg-cloud text-plum shadow-sm transition-transform active:scale-90"
+              className="grid h-11 w-11 place-items-center rounded-full bg-cloud text-plum shadow-sm transition-transform active:scale-90"
             >
               ‹
             </button>

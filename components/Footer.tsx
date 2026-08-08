@@ -13,7 +13,12 @@ export function Footer() {
           {SHOP_NAME_EN} • {SHOP_TAGLINE}
         </p>
         <div className="flex items-center gap-4">
-          <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm font-medium text-berry">
+          <a
+            href={INSTAGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 text-sm font-medium text-berry"
+          >
             <InstagramIcon className="h-5 w-5" />
             إنستغرام
           </a>
@@ -22,7 +27,7 @@ export function Footer() {
               href={`https://wa.me/${WHATSAPP_PHONE}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm font-medium text-[#25D366]"
+              className="inline-flex min-h-11 items-center rounded-full px-3 text-sm font-medium text-[#25D366]"
             >
               واتساب
             </a>

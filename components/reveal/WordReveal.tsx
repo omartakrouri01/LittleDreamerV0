@@ -21,6 +21,7 @@ export function WordReveal({ text, as = "h1", className, wordClassName }: WordRe
   const content = words.map((word, i) => (
     <span key={i} className="inline-block overflow-hidden py-1 align-bottom">
       <span
+        data-reveal
         className={`inline-block transition-[opacity,transform] duration-500 ease-out ${
           revealed ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
         } ${wordClassName ?? ""}`}

@@ -1,5 +1,7 @@
 import { chromium } from "playwright";
 
+const BASE = process.env.QA_BASE || "http://localhost:3200";
+
 const OUT = process.argv[2];
 const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
 
@@ -7,7 +9,7 @@ const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromi
 {
   const context = await browser.newContext({ viewport: { width: 1280, height: 800 } });
   const page = await context.newPage();
-  await page.goto("http://localhost:3100/dev/shop?toy=P001", { waitUntil: "networkidle" }); // ?toy= skips preloader
+  await page.goto(`${BASE}/?toy=x`, { waitUntil: "networkidle" }); // ?toy= skips preloader
   await page.waitForTimeout(300);
   const before = await page.evaluate(() => {
     const el = document.querySelector('[aria-hidden="true"] .text-cloud, .text-cloud');
@@ -36,7 +38,7 @@ const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromi
 {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
   const page = await context.newPage();
-  await page.goto("http://localhost:3100/dev/shop?toy=P001", { waitUntil: "networkidle" });
+  await page.goto(`${BASE}/?toy=x`, { waitUntil: "networkidle" });
   await page.waitForTimeout(300);
   const getTransform = () =>
     page.evaluate(() => {
@@ -59,7 +61,7 @@ const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromi
 {
   const context = await browser.newContext({ viewport: { width: 420, height: 900 } });
   const page = await context.newPage();
-  await page.goto("http://localhost:3100/dev/shop", { waitUntil: "networkidle" });
+  await page.goto(`${BASE}/`, { waitUntil: "networkidle" });
   await page.waitForTimeout(3600); // let preloader finish+exit
   await page.screenshot({ path: `${OUT}/reveal-top.png` });
 

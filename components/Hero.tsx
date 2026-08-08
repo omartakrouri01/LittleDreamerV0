@@ -2,15 +2,16 @@ import { LogoFull } from "./brand/LogoFull";
 import { ParallaxCloudField } from "./deco/ParallaxCloudField";
 import { WordReveal } from "./reveal/WordReveal";
 import { Reveal } from "./reveal/Reveal";
+import { ScrollCue } from "./ScrollCue";
 
-export function Hero() {
+export function Hero({ gridId }: { gridId: string }) {
   return (
-    <section className="relative overflow-hidden px-4 pb-16 pt-10 text-center sm:pb-24 sm:pt-16">
+    <section className="relative overflow-hidden px-4 pb-10 pt-6 text-center sm:pb-14 sm:pt-10">
       <ParallaxCloudField />
 
       <div className="relative mx-auto max-w-2xl">
         <Reveal>
-          <LogoFull size={220} className="mx-auto mb-6 sm:size-[260px]" priority />
+          <LogoFull size={190} className="mx-auto mb-5 sm:size-[225px]" priority />
         </Reveal>
 
         <WordReveal
@@ -25,12 +26,7 @@ export function Hero() {
         </Reveal>
       </div>
 
-      <div className="relative mt-10 flex flex-col items-center gap-1 text-plum/50">
-        <span className="text-xs">مرري للأسفل</span>
-        <span aria-hidden className="text-lg leading-none">
-          ⌄
-        </span>
-      </div>
+      <ScrollCue targetId={gridId} />
     </section>
   );
 }
