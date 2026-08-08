@@ -22,10 +22,10 @@ export function WordReveal({ text, as = "h1", className, wordClassName }: WordRe
     <span key={i} className="inline-block overflow-hidden py-1 align-bottom">
       <span
         data-reveal
-        className={`inline-block transition-[opacity,transform] duration-500 ease-out ${
-          revealed ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+        className={`inline-block transition-[opacity,transform] duration-[400ms] ease-out ${
+          revealed ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
         } ${wordClassName ?? ""}`}
-        style={{ transitionDelay: `${i * 60}ms` }}
+        style={{ transitionDelay: `${i * 45}ms` }}
       >
         {word}
         {i < words.length - 1 ? " " : ""}
