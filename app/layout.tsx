@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Baloo_Bhaijaan_2, IBM_Plex_Sans_Arabic } from "next/font/google";
 import { SHOP_NAME_EN, SHOP_TAGLINE } from "@/lib/config";
 import { Preloader } from "@/components/Preloader";
+import { DreamyBackdrop } from "@/components/deco/DreamyBackdrop";
 import "./globals.css";
 
 const baloo = Baloo_Bhaijaan_2({
@@ -44,9 +45,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <style>{`[data-reveal]{opacity:1 !important;transform:none !important}`}</style>
         </noscript>
       </head>
-      <body className="min-h-full flex flex-col bg-blush">
+      <body className="min-h-full bg-blush">
         <Preloader />
-        {children}
+        <DreamyBackdrop />
+        {/* Content rides above the fixed backdrop; the backdrop is z-0. */}
+        <div className="relative z-10 flex min-h-full flex-col">{children}</div>
       </body>
     </html>
   );

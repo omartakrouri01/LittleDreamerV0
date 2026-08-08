@@ -55,6 +55,40 @@ body {
   display: inline-block;
 }
 
+/* Background drift for DreamyBackdrop. Two paths so clouds crossing at
+   different heights never travel in lockstep. Each one crosses the viewport
+   and resets well outside it, so the wrap is never visible. Transform only —
+   these run on the compositor and cost no layout or paint. */
+@keyframes drift-a {
+  from {
+    transform: translate3d(-30vw, 0, 0);
+  }
+  to {
+    transform: translate3d(120vw, 0, 0);
+  }
+}
+
+@keyframes drift-b {
+  from {
+    transform: translate3d(120vw, 0, 0);
+  }
+  to {
+    transform: translate3d(-30vw, 0, 0);
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
 /* Gentle preloader float — the one intentional loop, brief (~2.4s cycle)
    and only mounted for the preloader's short lifetime. */
 @keyframes float {

@@ -8,8 +8,6 @@ const CLOUD_PATH =
 
 interface PriceBadgeProps {
   price: number;
-  /** Small deterministic tilt in degrees, derived from the toy id by the caller. */
-  rotation?: number;
   className?: string;
   /** Drives the settle-in animation (scale 0.9->1, tilt easing into place) as the card reveals. Defaults to true (already-settled) for non-grid usage like the modal. */
   revealed?: boolean;
@@ -21,9 +19,9 @@ interface PriceBadgeProps {
  * cloud with a gold outline and soft shadow. Used on grid cards and in the
  * product modal.
  */
-export function PriceBadge({ price, rotation = 0, className, revealed = true, settleDelayMs = 0 }: PriceBadgeProps) {
+export function PriceBadge({ price, className, revealed = true, settleDelayMs = 0 }: PriceBadgeProps) {
   const style: CSSProperties = {
-    transform: `rotate(${revealed ? rotation : rotation * 0.35}deg) scale(${revealed ? 1 : 0.9})`,
+    transform: `scale(${revealed ? 1 : 0.9})`,
     transitionDelay: `${settleDelayMs}ms`,
   };
   return (
