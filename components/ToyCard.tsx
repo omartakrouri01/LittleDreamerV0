@@ -10,14 +10,7 @@ import { useReveal } from "@/hooks/useReveal";
 import { PriceBadge } from "./PriceBadge";
 import { OrderButtons } from "./OrderButtons";
 import { Star } from "./deco/Star";
-
-/** Deterministic small tilt (-4..4deg) from the toy id, stable across re-renders. */
-function rotationForId(id: string): number {
-  let hash = 0;
-  for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) | 0;
-  const normalized = ((hash % 800) + 800) % 800; // 0..799
-  return (normalized / 800) * 8 - 4;
-}
+import { categoryIcon } from "./icons/ToyIcons";
 
 interface ToyCardProps {
   toy: Toy;
@@ -30,7 +23,6 @@ interface ToyCardProps {
 }
 
 export function ToyCard({ toy, onOpen, priority = false, className, index = 0 }: ToyCardProps) {
-  const rotation = rotationForId(toy.id);
   const { ref, revealed } = useReveal<HTMLDivElement>();
   const delayMs = Math.min(index * 45, 180);
 
@@ -56,18 +48,29 @@ export function ToyCard({ toy, onOpen, priority = false, className, index = 0 }:
       }}
       onKeyDown={handleKeyDown}
       aria-label={toy.name}
-      style={{ transitionDelay: revealed ? `${delayMs}ms` : "0ms" }}
-      className={`group relative flex cursor-pointer flex-col overflow-hidden rounded-3xl bg-cloud shadow-sm transition-[opacity,transform,box-shadow] duration-[400ms] ease-out hover:-translate-y-1 hover:shadow-lg ${
+      style={{
+        transitionDelay: revealed ? `${delayMs}ms` : "0ms",
+        // Each card is tinted by its category, so a grid reads as a varied set
+        // rather than identical white tiles. Kept faint: --plum text on this
+        // over white stays far above contrast minimums.
+        background: toy.category
+          ? `linear-gradient(170deg, ${categoryColor(toy.category)}33, ${categoryColor(toy.category)}12), var(--cloud)`
+          : "var(--cloud)",
+      }}
+      className={`group relative flex cursor-pointer flex-col overflow-hidden rounded-3xl shadow-sm transition-[opacity,transform,box-shadow] duration-[400ms] ease-out hover:-translate-y-1 hover:shadow-lg ${
         revealed ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
       } ${className ?? ""}`}
     >
-      <div className="relative aspect-square w-full overflow-hidden bg-cloud p-3">
+      {/* Padding lives on the <Image>, not the wrapper: `fill` positions against
+          the padding box, so wrapper padding would sit under the photo. On the
+          image it insets the picture, letting the card tint show as a frame. */}
+      <div className="relative aspect-square w-full overflow-hidden">
         <Image
           src={cldUrl(toy.image, 600)}
           alt={toy.name}
           fill
           sizes="(max-width: 768px) 45vw, (max-width: 1024px) 30vw, 22vw"
-          className="object-contain"
+          className="object-contain p-3"
           priority={priority}
           loading={priority ? undefined : "lazy"}
         />
@@ -83,9 +86,13 @@ export function ToyCard({ toy, onOpen, priority = false, className, index = 0 }:
       <div className="flex flex-1 flex-col gap-1.5 p-3">
         {toy.category && (
           <span
-            className="w-fit rounded-full px-2 py-0.5 text-[11px] font-medium text-plum"
+            className="inline-flex w-fit items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium text-plum"
             style={{ backgroundColor: categoryColor(toy.category) }}
           >
+            {(() => {
+              const Icon = categoryIcon(toy.category);
+              return <Icon className="h-3 w-3" />;
+            })()}
             {toy.category}
           </span>
         )}
@@ -93,7 +100,7 @@ export function ToyCard({ toy, onOpen, priority = false, className, index = 0 }:
             the badge sits at the end, i.e. to its left. */}
         <div className="flex items-center justify-between gap-2">
           <h3 className="line-clamp-1 min-w-0 flex-1 font-display text-base font-bold text-plum">{toy.name}</h3>
-          <PriceBadge price={toy.price} rotation={rotation} revealed={revealed} settleDelayMs={delayMs + 120} />
+          <PriceBadge price={toy.price} revealed={revealed} settleDelayMs={delayMs + 120} />
         </div>
         <p className="text-xs text-plum/70">
           {formatAgeRange(toy.ageMin, toy.ageMax)}

@@ -1,6 +1,7 @@
 "use client";
 
 import type { CategoryInfo } from "@/lib/categories";
+import { categoryIcon } from "./icons/ToyIcons";
 import { WordReveal } from "./reveal/WordReveal";
 import { RevealDivider } from "./reveal/RevealDivider";
 import { Reveal } from "./reveal/Reveal";
@@ -35,6 +36,7 @@ export function CategoryChips({ categories, active, onSelect, gridId }: Category
         <div className="mx-auto flex w-max max-w-full gap-2 sm:flex-wrap sm:justify-center">
           {categories.map((cat) => {
             const isActive = active === cat.name;
+            const Icon = categoryIcon(cat.name);
             return (
               <button
                 key={cat.name}
@@ -46,6 +48,7 @@ export function CategoryChips({ categories, active, onSelect, gridId }: Category
                   isActive ? "text-white" : "text-plum"
                 }`}
               >
+                <Icon className="me-1.5 h-4 w-4" />
                 {cat.name}
                 <span className="ms-1.5 opacity-60">({cat.count})</span>
               </button>
