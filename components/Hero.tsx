@@ -11,7 +11,7 @@ export function Hero({ gridId }: { gridId: string }) {
 
       <div className="relative mx-auto max-w-2xl">
         <Reveal>
-          <LogoFull size={190} className="mx-auto mb-5 sm:size-[225px]" priority />
+          <LogoFull width={225} className="mx-auto mb-5 w-[190px] sm:w-[225px]" priority />
         </Reveal>
 
         <WordReveal

@@ -98,7 +98,7 @@ export function Preloader() {
         style={{ transform: phase === "active" ? "scale(1)" : "scale(0.9)" }}
       >
         <div className="animate-[float_2.4s_ease-in-out_infinite]">
-          <LogoFull size={140} priority />
+          <LogoFull width={150} className="w-[150px]" priority />
         </div>
       </div>
 

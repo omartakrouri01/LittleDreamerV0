@@ -8,7 +8,7 @@ export function Footer() {
     <footer className="relative mt-8 bg-cloud pt-10">
       <CloudDivider className="absolute -top-px h-8 w-full text-blush" />
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 pb-10 text-center sm:px-6">
-        <LogoMark size={40} />
+        <LogoMark width={40} className="w-10" />
         <p className="font-display text-sm font-bold text-plum">
           {SHOP_NAME_EN} • {SHOP_TAGLINE}
         </p>
