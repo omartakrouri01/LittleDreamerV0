@@ -10,55 +10,53 @@ interface OrderButtonsProps {
   className?: string;
 }
 
-type OverlayState = null | "copied" | "manual";
-
 function orderMessage(toy: Toy): string {
   const price = toy.price % 1 === 0 ? toy.price : toy.price.toFixed(2);
   return `مرحباً! أرغب بطلب: ${toy.name} — ${price}${CURRENCY}`;
 }
 
 /**
- * PRIMARY (Instagram): copy the order message, show a prominent overlay
- * with paste instructions, then open the shop's Instagram DM.
- * SECONDARY (WhatsApp): only rendered when ENABLE_WHATSAPP is true — one
- * tap, no clipboard step, WhatsApp pre-fills the text itself.
+ * PRIMARY (Instagram): a real link straight to the shop's DM, with the order
+ * message copied to the clipboard on the way out.
+ *
+ * It must stay an <a> that the browser navigates itself. The previous version
+ * copied, showed an overlay, then called window.open() from a 1.5s setTimeout —
+ * by which point the tap's user-activation had expired, so mobile browsers
+ * blocked it as a pop-up and the customer never reached Instagram. Anchor
+ * navigation is never pop-up blocked, and firing the clipboard write inside the
+ * click handler keeps it within the gesture that permits it.
+ *
+ * SECONDARY (WhatsApp): only rendered when ENABLE_WHATSAPP is true — WhatsApp
+ * pre-fills the text itself, so there's no clipboard step at all.
  */
 export function OrderButtons({ toy, className }: OrderButtonsProps) {
-  const [overlay, setOverlay] = useState<OverlayState>(null);
+  const [copyFailed, setCopyFailed] = useState(false);
   const message = orderMessage(toy);
 
-  const copyAndOpen = async () => {
+  function copyOnTheWayOut() {
+    // Fire-and-forget: never await, never block the navigation. If the browser
+    // refuses (insecure context, permission denied), flag it — the fallback
+    // below is then waiting when the customer comes back to this tab.
     try {
-      await navigator.clipboard.writeText(message);
-      setOverlay("copied");
-      window.setTimeout(() => {
-        window.open(INSTAGRAM_DM, "_blank", "noopener,noreferrer");
-      }, 1500);
+      navigator.clipboard.writeText(message).catch(() => setCopyFailed(true));
     } catch {
-      setOverlay("manual");
+      setCopyFailed(true);
     }
-  };
-
-  const recopy = async () => {
-    try {
-      await navigator.clipboard.writeText(message);
-      setOverlay("copied");
-    } catch {
-      setOverlay("manual");
-    }
-  };
+  }
 
   const whatsappHref = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(message)}`;
 
   return (
     <div className={className}>
-      <button
-        type="button"
-        onClick={copyAndOpen}
-        className="min-h-11 w-full rounded-full bg-berry px-4 py-2.5 text-sm font-bold text-white transition-transform duration-150 active:scale-[0.97]"
+      <a
+        href={INSTAGRAM_DM}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={copyOnTheWayOut}
+        className="flex min-h-11 w-full items-center justify-center rounded-full bg-berry px-4 py-2.5 text-center text-sm font-bold text-white transition-transform duration-150 active:scale-[0.97]"
       >
         اطلب عبر إنستغرام
-      </button>
+      </a>
 
       {ENABLE_WHATSAPP && (
         <a
@@ -71,55 +69,31 @@ export function OrderButtons({ toy, className }: OrderButtonsProps) {
         </a>
       )}
 
-      {overlay &&
+      {/* Only when the automatic copy failed. The customer is in Instagram by
+          now, so this is waiting for them on their return rather than
+          interrupting the trip out. */}
+      {copyFailed &&
         typeof document !== "undefined" &&
         createPortal(
           <div
             className="fixed inset-0 z-[100] flex items-center justify-center bg-plum/60 p-4"
-            onClick={() => setOverlay(null)}
+            onClick={() => setCopyFailed(false)}
             role="dialog"
             aria-modal="true"
           >
             <div className="w-full max-w-sm rounded-3xl bg-cloud p-6 text-center shadow-xl" onClick={(e) => e.stopPropagation()}>
-              {overlay === "copied" ? (
-                <>
-                  <h3 className="font-display text-xl font-extrabold text-plum">تم نسخ الرسالة ✓</h3>
-                  <div className="mt-3 rounded-xl border border-petal bg-blush p-3 text-sm text-plum">{message}</div>
-                  <ol className="mt-4 space-y-1.5 text-start text-sm text-plum/80">
-                    <li>١. سيتم فتح إنستغرام</li>
-                    <li>٢. اضغط مطولاً في حقل الكتابة واختر &quot;لصق&quot;</li>
-                    <li>٣. أرسل الرسالة</li>
-                  </ol>
-                  <button type="button" onClick={recopy} className="mt-4 min-h-11 w-full rounded-full bg-berry px-4 py-2.5 text-sm font-semibold text-white">
-                    نسخ مرة أخرى
-                  </button>
-                  <button type="button" onClick={() => setOverlay(null)} className="mt-2 min-h-11 w-full text-sm font-medium text-plum/60">
-                    إغلاق
-                  </button>
-                </>
-              ) : (
-                <>
-                  <h3 className="font-display text-xl font-extrabold text-plum">تعذّر النسخ التلقائي</h3>
-                  <p className="mt-2 text-sm text-plum/80">يرجى نسخ الرسالة التالية يدوياً ثم فتح إنستغرام ولصقها:</p>
-                  <textarea
-                    readOnly
-                    value={message}
-                    rows={3}
-                    onFocus={(e) => e.currentTarget.select()}
-                    className="mt-3 w-full rounded-xl border border-petal bg-blush p-3 text-sm text-plum"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => window.open(INSTAGRAM_DM, "_blank", "noopener,noreferrer")}
-                    className="mt-4 min-h-11 w-full rounded-full bg-berry px-4 py-2.5 text-sm font-semibold text-white"
-                  >
-                    فتح إنستغرام
-                  </button>
-                  <button type="button" onClick={() => setOverlay(null)} className="mt-2 min-h-11 w-full text-sm font-medium text-plum/60">
-                    إغلاق
-                  </button>
-                </>
-              )}
+              <h3 className="font-display text-xl font-extrabold text-plum">تعذّر النسخ التلقائي</h3>
+              <p className="mt-2 text-sm text-plum/80">انسخي الرسالة التالية والصقيها في المحادثة:</p>
+              <textarea
+                readOnly
+                value={message}
+                rows={3}
+                onFocus={(e) => e.currentTarget.select()}
+                className="mt-3 w-full rounded-xl border border-petal bg-blush p-3 text-sm text-plum"
+              />
+              <button type="button" onClick={() => setCopyFailed(false)} className="mt-4 min-h-11 w-full rounded-full bg-berry px-4 py-2.5 text-sm font-semibold text-white">
+                إغلاق
+              </button>
             </div>
           </div>,
           document.body,
