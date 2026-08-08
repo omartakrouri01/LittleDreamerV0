@@ -55,8 +55,8 @@ export function FilterBar({ filters, applyPatch, clearAll, hasActiveFilters, res
         condensed ? "px-4 py-1.5 shadow-md sm:px-6" : "px-4 py-3 sm:px-6"
       }`}
     >
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-2">
-        <div className="relative min-w-[160px] flex-1">
+      <div className="mx-auto flex max-w-6xl flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+        <div className="relative w-full sm:w-auto sm:min-w-[160px] sm:flex-1">
           <input
             type="search"
             value={searchInput}
@@ -76,51 +76,58 @@ export function FilterBar({ filters, applyPatch, clearAll, hasActiveFilters, res
           )}
         </div>
 
-        <select value={filters.age} onChange={(e) => applyPatch({ age: e.target.value })} className={selectClass} aria-label="العمر">
-          <option value="">كل الأعمار</option>
-          {AGE_BUCKETS.map((b) => (
-            <option key={b.id} value={b.id}>
-              {b.label}
-            </option>
-          ))}
-        </select>
+        <div className="grid grid-cols-2 gap-2 sm:contents">
+          <select value={filters.age} onChange={(e) => applyPatch({ age: e.target.value })} className={selectClass} aria-label="العمر">
+            <option value="">كل الأعمار</option>
+            {AGE_BUCKETS.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.label}
+              </option>
+            ))}
+          </select>
 
-        <select value={filters.cat} onChange={(e) => applyPatch({ cat: e.target.value })} className={selectClass} aria-label="الفئة">
-          <option value="">كل الفئات</option>
-          {categories.map((c) => (
-            <option key={c.name} value={c.name}>
-              {c.name}
-            </option>
-          ))}
-        </select>
+          <select value={filters.cat} onChange={(e) => applyPatch({ cat: e.target.value })} className={selectClass} aria-label="الفئة">
+            <option value="">كل الفئات</option>
+            {categories.map((c) => (
+              <option key={c.name} value={c.name}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        <select value={filters.sex} onChange={(e) => applyPatch({ sex: e.target.value })} className={selectClass} aria-label="ولد / بنت">
-          <option value="">الجميع</option>
-          {sexValues.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
-        </select>
+        <div className="grid grid-cols-2 gap-2 sm:contents">
+          <select value={filters.sex} onChange={(e) => applyPatch({ sex: e.target.value })} className={selectClass} aria-label="ولد / بنت">
+            <option value="">الجميع</option>
+            {sexValues.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
 
-        <select
-          value={filters.sort}
-          onChange={(e) => applyPatch({ sort: e.target.value as ToyFilters["sort"] })}
-          className={selectClass}
-          aria-label="الترتيب"
-        >
-          <option value="">الأحدث</option>
-          <option value="price-asc">السعر: من الأقل</option>
-          <option value="price-desc">السعر: من الأعلى</option>
-        </select>
+          <select
+            value={filters.sort}
+            onChange={(e) => applyPatch({ sort: e.target.value as ToyFilters["sort"] })}
+            className={selectClass}
+            aria-label="الترتيب"
+          >
+            <option value="">الأحدث</option>
+            <option value="price-asc">السعر: من الأقل</option>
+            <option value="price-desc">السعر: من الأعلى</option>
+          </select>
+        </div>
 
-        {hasActiveFilters && (
-          <button type="button" onClick={clearAll} className="rounded-full px-3 py-2 text-sm font-semibold text-berry hover:bg-cloud/60">
-            مسح الفلاتر
-          </button>
-        )}
-
-        <span className="ms-auto whitespace-nowrap text-sm text-plum/60">{resultCount} لعبة</span>
+        <div className="flex items-center justify-between sm:contents">
+          {hasActiveFilters ? (
+            <button type="button" onClick={clearAll} className="rounded-full px-3 py-2 text-sm font-semibold text-berry hover:bg-cloud/60">
+              مسح الفلاتر
+            </button>
+          ) : (
+            <span />
+          )}
+          <span className="whitespace-nowrap text-sm text-plum/60 sm:ms-auto">{resultCount} لعبة</span>
+        </div>
       </div>
     </div>
   );
