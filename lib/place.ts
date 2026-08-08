@@ -8,11 +8,17 @@ export interface PlaceInfo {
 }
 
 /**
- * Derives which `place` value means "outdoor" without ever matching the
- * literal string 'خارجي': whichever distinct value matches /خارج/ wins,
- * falling back to the second distinct value found. With fewer than two
- * distinct values there's nothing to shelve separately, so the caller
- * should hide the outdoor shelf section (outdoorValue === null).
+ * Derives which `place` value means "outdoor": whichever distinct value
+ * contains 'خارج' wins. With fewer than two distinct values there is nothing
+ * to shelve separately, so the caller hides the outdoor shelf entirely
+ * (outdoorValue === null).
+ *
+ * It deliberately does NOT guess when nothing matches. An earlier version fell
+ * back to "the second distinct value seen", which meant that renaming the
+ * place column to wording without 'خارج' would quietly promote whichever value
+ * happened to be second — very possibly the indoor one — into a shelf headed
+ * "ألعاب خارجية". A shelf that silently lists the wrong toys is worse than no
+ * shelf, so an unrecognised set now hides it instead.
  */
 export function derivePlaces(toys: Pick<Toy, "place">[]): PlaceInfo {
   const seen = new Map<string, string>(); // normalized key -> display value (first-seen casing/spacing)
@@ -29,7 +35,7 @@ export function derivePlaces(toys: Pick<Toy, "place">[]): PlaceInfo {
   }
 
   const outdoorMatch = distinctValues.find((v) => /خارج/.test(v));
-  return { outdoorValue: outdoorMatch ?? distinctValues[1], distinctValues };
+  return { outdoorValue: outdoorMatch ?? null, distinctValues };
 }
 
 export function isOutdoorToy(toy: Pick<Toy, "place">, outdoorValue: string | null): boolean {
