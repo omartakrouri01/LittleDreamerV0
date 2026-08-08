@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { CURRENCY, ENABLE_WHATSAPP, INSTAGRAM_DM, WHATSAPP_PHONE } from "@/lib/config";
 import type { Toy } from "@/lib/sheets";
@@ -10,9 +10,19 @@ interface OrderButtonsProps {
   className?: string;
 }
 
-function orderMessage(toy: Toy): string {
+/**
+ * The message the customer pastes into the DM. The direct link to the product is
+ * appended so the shop can tell exactly which toy is meant — names repeat and
+ * chat crops photos, the `?toy=` link never does.
+ *
+ * Kept pure and given the URL, rather than reading window.location itself: this
+ * runs during render, and a value that differs between server and client would
+ * be a hydration mismatch the moment it reaches the DOM.
+ */
+function orderMessage(toy: Toy, productUrl: string): string {
   const price = toy.price % 1 === 0 ? toy.price : toy.price.toFixed(2);
-  return `مرحباً! أرغب بطلب: ${toy.name} — ${price}${CURRENCY}`;
+  const line = `مرحباً! أرغب بطلب: ${toy.name} — ${price}${CURRENCY}`;
+  return productUrl ? `${line}\n${productUrl}` : line;
 }
 
 /**
@@ -31,7 +41,14 @@ function orderMessage(toy: Toy): string {
  */
 export function OrderButtons({ toy, className }: OrderButtonsProps) {
   const [copyFailed, setCopyFailed] = useState(false);
-  const message = orderMessage(toy);
+  // Resolved after mount so server and first client render agree; the clipboard
+  // write only ever happens on a tap, long after this has filled in.
+  const [productUrl, setProductUrl] = useState("");
+  useEffect(() => {
+    setProductUrl(`${window.location.origin}${window.location.pathname}?toy=${encodeURIComponent(toy.id)}`);
+  }, [toy.id]);
+
+  const message = orderMessage(toy, productUrl);
 
   function copyOnTheWayOut() {
     // Fire-and-forget: never await, never block the navigation. If the browser

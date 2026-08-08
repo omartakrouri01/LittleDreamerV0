@@ -48,7 +48,7 @@ export function FilterBar({ filters, applyPatch, clearAll, hasActiveFilters, res
   }
 
   const selectClass =
-    "min-h-11 rounded-full border border-petal/50 bg-cloud px-3 py-2 text-sm text-plum focus-visible:outline-berry";
+    "min-h-11 rounded-full border border-petal/50 bg-cloud px-3 py-2 text-center text-sm text-plum focus-visible:outline-berry";
 
   return (
     // top-16 == the header's real 64px height; the previous top-[60px] left the
@@ -100,8 +100,8 @@ export function FilterBar({ filters, applyPatch, clearAll, hasActiveFilters, res
         </div>
 
         <div className="grid grid-cols-2 gap-2 sm:contents">
-          <select value={filters.sex} onChange={(e) => applyPatch({ sex: e.target.value })} className={selectClass} aria-label="ولد / بنت">
-            <option value="">الجميع</option>
+          <select value={filters.sex} onChange={(e) => applyPatch({ sex: e.target.value })} className={selectClass} aria-label="التصفية حسب الأولاد أو البنات">
+            <option value="">كل الأطفال</option>
             {sexValues.map((s) => (
               <option key={s} value={s}>
                 {s}

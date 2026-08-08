@@ -29,10 +29,15 @@ export function PriceBadge({ price, className, revealed = true, settleDelayMs = 
       className={`relative h-[46px] w-[86px] shrink-0 drop-shadow-[0_3px_6px_rgba(62,34,55,0.25)] transition-transform duration-500 ease-out ${className ?? ""}`}
       style={style}
     >
-      <svg viewBox="0 0 140 76" className="absolute inset-0 h-full w-full" aria-hidden="true">
+      {/* The path's own bounds are x 5.6-124, y 9.5-61.1, so its centre sits at
+          (64.8, 35.3) — up and to the left of the 140x76 box centre, which left
+          the price visibly off-centre inside the cloud. Shifting the viewBox
+          origin by that difference recentres the artwork at identical scale, so
+          a plainly centred label lands on the cloud's middle. */}
+      <svg viewBox="-5.2 -2.7 140 76" className="absolute inset-0 h-full w-full" aria-hidden="true">
         <path d={CLOUD_PATH} fill="var(--cloud)" stroke="var(--gold)" strokeWidth="4" strokeLinejoin="round" />
       </svg>
-      <span className="relative flex h-full w-full items-center justify-center pb-1 text-[15px] font-bold text-plum">
+      <span className="relative flex h-full w-full items-center justify-center text-[15px] font-bold text-plum">
         <bdi className="price-isolate">
           {price % 1 === 0 ? price : price.toFixed(2)}
           {CURRENCY}
