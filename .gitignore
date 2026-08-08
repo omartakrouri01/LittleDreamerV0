@@ -43,3 +43,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# claude code — machine-local settings only; .claude/skills/ is committed
+.claude/settings.local.json
