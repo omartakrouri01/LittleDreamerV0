@@ -18,8 +18,11 @@ export function WordReveal({ text, as = "h1", className, wordClassName }: WordRe
   const { ref, revealed } = useReveal<HTMLHeadingElement>();
   const words = text.split(/\s+/).filter(Boolean);
 
+  // No overflow-hidden on the per-word wrapper: it clipped the hamza on أ, which
+  // rides above the line box. The reveal only travels 12px, so the mask that
+  // clipping paid for bought very little.
   const content = words.map((word, i) => (
-    <span key={i} className="inline-block overflow-hidden py-1 align-bottom">
+    <span key={i} className="inline-block py-1 align-bottom">
       <span
         data-reveal
         className={`inline-block transition-[opacity,transform] duration-[400ms] ease-out ${
