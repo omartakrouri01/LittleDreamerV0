@@ -26,6 +26,50 @@ function orderMessage(toy: Toy, productUrl: string): string {
 }
 
 /**
+ * Copies synchronously, and returns whether it worked.
+ *
+ * This has to finish inside the click handler. navigator.clipboard.writeText()
+ * returns a Promise, and the anchor navigates the moment the handler returns —
+ * iOS then backgrounds the page and hands over to the Instagram app, abandoning
+ * the pending write, so the customer arrives in the DM with nothing to paste.
+ * document.execCommand("copy") is synchronous and completes before navigation.
+ *
+ * The selection dance is the long-standing iOS recipe: Safari will not copy from
+ * a readOnly field, needs an explicit Range as well as setSelectionRange, and
+ * zooms the page if the font is under 16px.
+ */
+function copySynchronously(text: string): boolean {
+  try {
+    const el = document.createElement("textarea");
+    el.value = text;
+    el.setAttribute("readonly", ""); // stops iOS opening the keyboard
+    el.style.position = "fixed";
+    el.style.top = "0";
+    el.style.opacity = "0";
+    el.style.fontSize = "16px"; // stops iOS zooming the page toward the field
+    document.body.appendChild(el);
+
+    el.select(); // the part that actually establishes the copy selection
+    el.setSelectionRange(0, text.length); // iOS additionally wants an explicit range
+
+    const ok = document.execCommand("copy");
+    document.body.removeChild(el);
+    if (ok) return true;
+  } catch {
+    // fall through to the async API below
+  }
+  // Backstop for anything that has dropped execCommand. Fire-and-forget: if the
+  // navigation cuts it short there is nothing further we can do here, and the
+  // caller has already been told the synchronous attempt failed.
+  try {
+    void navigator.clipboard?.writeText(text);
+  } catch {
+    /* nothing left to try */
+  }
+  return false;
+}
+
+/**
  * PRIMARY (Instagram): a real link straight to the shop's DM, with the order
  * message copied to the clipboard on the way out.
  *
@@ -51,14 +95,11 @@ export function OrderButtons({ toy, className }: OrderButtonsProps) {
   const message = orderMessage(toy, productUrl);
 
   function copyOnTheWayOut() {
-    // Fire-and-forget: never await, never block the navigation. If the browser
-    // refuses (insecure context, permission denied), flag it — the fallback
-    // below is then waiting when the customer comes back to this tab.
-    try {
-      navigator.clipboard.writeText(message).catch(() => setCopyFailed(true));
-    } catch {
-      setCopyFailed(true);
-    }
+    // Synchronous, so it is done before the browser follows the link. It also
+    // reports success immediately: the old async .catch() often never ran,
+    // because navigation tore the page down first — which meant a failed copy
+    // looked exactly like a successful one and the fallback never appeared.
+    if (!copySynchronously(message)) setCopyFailed(true);
   }
 
   const whatsappHref = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(message)}`;
