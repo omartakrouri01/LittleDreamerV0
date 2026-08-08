@@ -55,7 +55,7 @@ export function OrderButtons({ toy, className }: OrderButtonsProps) {
       <button
         type="button"
         onClick={copyAndOpen}
-        className="w-full rounded-full bg-berry px-4 py-2.5 text-sm font-bold text-white transition-transform duration-150 active:scale-[0.97]"
+        className="min-h-11 w-full rounded-full bg-berry px-4 py-2.5 text-sm font-bold text-white transition-transform duration-150 active:scale-[0.97]"
       >
         اطلب عبر إنستغرام
       </button>
@@ -65,7 +65,7 @@ export function OrderButtons({ toy, className }: OrderButtonsProps) {
           href={whatsappHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-2 block w-full rounded-full bg-[#25D366] px-4 py-2.5 text-center text-sm font-bold text-white transition-transform duration-150 active:scale-[0.97]"
+          className="mt-2 flex min-h-11 w-full items-center justify-center rounded-full bg-[#25D366] px-4 py-2.5 text-center text-sm font-bold text-white transition-transform duration-150 active:scale-[0.97]"
         >
           اطلب عبر واتساب
         </a>
@@ -90,10 +90,10 @@ export function OrderButtons({ toy, className }: OrderButtonsProps) {
                     <li>٢. اضغط مطولاً في حقل الكتابة واختر &quot;لصق&quot;</li>
                     <li>٣. أرسل الرسالة</li>
                   </ol>
-                  <button type="button" onClick={recopy} className="mt-4 w-full rounded-full bg-berry px-4 py-2.5 text-sm font-semibold text-white">
+                  <button type="button" onClick={recopy} className="mt-4 min-h-11 w-full rounded-full bg-berry px-4 py-2.5 text-sm font-semibold text-white">
                     نسخ مرة أخرى
                   </button>
-                  <button type="button" onClick={() => setOverlay(null)} className="mt-2 w-full py-1 text-sm font-medium text-plum/60">
+                  <button type="button" onClick={() => setOverlay(null)} className="mt-2 min-h-11 w-full text-sm font-medium text-plum/60">
                     إغلاق
                   </button>
                 </>
@@ -111,11 +111,11 @@ export function OrderButtons({ toy, className }: OrderButtonsProps) {
                   <button
                     type="button"
                     onClick={() => window.open(INSTAGRAM_DM, "_blank", "noopener,noreferrer")}
-                    className="mt-4 w-full rounded-full bg-berry px-4 py-2.5 text-sm font-semibold text-white"
+                    className="mt-4 min-h-11 w-full rounded-full bg-berry px-4 py-2.5 text-sm font-semibold text-white"
                   >
                     فتح إنستغرام
                   </button>
-                  <button type="button" onClick={() => setOverlay(null)} className="mt-2 w-full py-1 text-sm font-medium text-plum/60">
+                  <button type="button" onClick={() => setOverlay(null)} className="mt-2 min-h-11 w-full text-sm font-medium text-plum/60">
                     إغلاق
                   </button>
                 </>

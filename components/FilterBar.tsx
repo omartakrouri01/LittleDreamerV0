@@ -47,11 +47,14 @@ export function FilterBar({ filters, applyPatch, clearAll, hasActiveFilters, res
     debounceRef.current = setTimeout(() => applyPatch({ q: value }), 200);
   }
 
-  const selectClass = "rounded-full border border-petal/50 bg-cloud px-3 py-2 text-sm text-plum focus-visible:outline-berry";
+  const selectClass =
+    "min-h-11 rounded-full border border-petal/50 bg-cloud px-3 py-2 text-sm text-plum focus-visible:outline-berry";
 
   return (
+    // top-16 == the header's real 64px height; the previous top-[60px] left the
+    // bar's top 4px tucked under the header once both were stuck.
     <div
-      className={`sticky top-[60px] z-30 border-b border-petal/30 bg-blush/90 backdrop-blur-md transition-[padding,box-shadow] duration-300 ${
+      className={`sticky top-16 z-30 border-b border-petal/30 bg-blush/90 backdrop-blur-md transition-[padding,box-shadow] duration-300 ${
         condensed ? "px-4 py-1.5 shadow-md sm:px-6" : "px-4 py-3 sm:px-6"
       }`}
     >
@@ -62,7 +65,7 @@ export function FilterBar({ filters, applyPatch, clearAll, hasActiveFilters, res
             value={searchInput}
             onChange={(e) => handleSearchChange(e.target.value)}
             placeholder="ابحث عن لعبة..."
-            className="w-full rounded-full border border-petal/50 bg-cloud px-4 py-2 text-sm text-plum placeholder:text-plum/40 focus-visible:outline-berry"
+            className="min-h-11 w-full rounded-full border border-petal/50 bg-cloud px-4 py-2 text-sm text-plum placeholder:text-plum/40 focus-visible:outline-berry"
           />
           {searchInput && (
             <button
@@ -120,7 +123,11 @@ export function FilterBar({ filters, applyPatch, clearAll, hasActiveFilters, res
 
         <div className="flex items-center justify-between sm:contents">
           {hasActiveFilters ? (
-            <button type="button" onClick={clearAll} className="rounded-full px-3 py-2 text-sm font-semibold text-berry hover:bg-cloud/60">
+            <button
+              type="button"
+              onClick={clearAll}
+              className="inline-flex min-h-11 items-center rounded-full px-3 text-sm font-semibold text-berry hover:bg-cloud/60"
+            >
               مسح الفلاتر
             </button>
           ) : (

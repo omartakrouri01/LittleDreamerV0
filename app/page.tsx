@@ -5,6 +5,7 @@ import { derivePlaces, isOutdoorToy } from "@/lib/place";
 import { deriveDistinctValues } from "@/lib/facets";
 import { cldUrl } from "@/lib/cloudinary";
 import { CURRENCY, SHOP_NAME_EN, SHOP_TAGLINE } from "@/lib/config";
+import { PRODUCT_GRID_ID } from "@/lib/constants";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { ShopExperience } from "@/components/ShopExperience";
@@ -54,7 +55,7 @@ export default async function Page() {
       <>
         <Header />
         <main>
-          <Hero />
+          <Hero gridId={PRODUCT_GRID_ID} />
           <ShopExperience toys={toys} outdoorToys={outdoorToys} categories={categories} sexValues={sexValues} />
         </main>
         <Footer />

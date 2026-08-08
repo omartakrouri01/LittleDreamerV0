@@ -36,6 +36,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       dir="rtl"
       className={`${baloo.variable} ${plexArabic.variable} h-full antialiased`}
     >
+      <head>
+        {/* Reveal-on-scroll elements start at opacity-0 and are un-hidden by an
+            IntersectionObserver. Without JS that observer never runs, so the page
+            would render blank below the hero — force them visible instead. */}
+        <noscript>
+          <style>{`[data-reveal]{opacity:1 !important;transform:none !important}`}</style>
+        </noscript>
+      </head>
       <body className="min-h-full flex flex-col bg-blush">
         <Preloader />
         {children}

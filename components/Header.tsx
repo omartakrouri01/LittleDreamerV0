@@ -32,7 +32,7 @@ export function Header() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="إنستغرام"
-          className="grid h-10 w-10 place-items-center rounded-full text-berry transition-colors hover:bg-cloud/60"
+          className="grid h-11 w-11 place-items-center rounded-full text-berry transition-colors hover:bg-cloud/60"
         >
           <InstagramIcon className="h-6 w-6" />
         </a>

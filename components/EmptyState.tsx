@@ -10,7 +10,7 @@ export function EmptyState({ onClear }: EmptyStateProps) {
       <Cloud variant="b" className="h-20 w-32 text-petal/60" />
       <p className="font-display text-lg font-bold text-plum">لا توجد ألعاب مطابقة</p>
       {onClear && (
-        <button type="button" onClick={onClear} className="mt-1 rounded-full bg-berry px-5 py-2 text-sm font-semibold text-white">
+        <button type="button" onClick={onClear} className="mt-1 inline-flex min-h-11 items-center rounded-full bg-berry px-5 text-sm font-semibold text-white">
           مسح الفلاتر
         </button>
       )}

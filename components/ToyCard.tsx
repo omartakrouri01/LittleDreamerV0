@@ -44,6 +44,7 @@ export function ToyCard({ toy, onOpen, priority = false, className, index = 0 }:
   return (
     <div
       ref={ref}
+      data-reveal
       role="button"
       tabIndex={0}
       onClick={(e) => {

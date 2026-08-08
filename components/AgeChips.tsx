@@ -21,7 +21,7 @@ export function AgeChips({ active, onSelect, gridId }: AgeChipsProps) {
   }
 
   return (
-    <section className="px-4 py-6 sm:px-6">
+    <section className="px-4 py-4 sm:px-6 sm:py-5">
       <div className="mx-auto mb-4 max-w-xs text-center">
         <WordReveal as="h2" text="تسوق حسب العمر" className="font-display text-xl font-extrabold text-plum sm:text-2xl" />
         <RevealDivider className="mx-auto mt-1 h-3 w-24" />

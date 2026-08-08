@@ -130,7 +130,11 @@ export function ProductModal({ toy, onClose, returnFocusRef }: ProductModalProps
         }`}
       >
         <div className="flex items-center justify-between border-b border-petal/40 p-4">
-          <button type="button" onClick={handleShare} className="rounded-full px-3 py-1.5 text-sm font-semibold text-berry hover:bg-blush">
+          <button
+            type="button"
+            onClick={handleShare}
+            className="inline-flex min-h-11 items-center rounded-full px-3 text-sm font-semibold text-berry hover:bg-blush"
+          >
             {shareLabel}
           </button>
           <button
@@ -138,7 +142,7 @@ export function ProductModal({ toy, onClose, returnFocusRef }: ProductModalProps
             type="button"
             onClick={requestClose}
             aria-label="إغلاق"
-            className="grid h-9 w-9 place-items-center rounded-full text-plum hover:bg-blush"
+            className="grid h-11 w-11 place-items-center rounded-full text-plum hover:bg-blush"
           >
             ✕
           </button>

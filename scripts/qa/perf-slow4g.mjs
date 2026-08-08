@@ -1,6 +1,6 @@
 import { chromium } from "playwright";
 
-const URL = process.argv[2] || "http://localhost:3100/dev/shop";
+const URL = process.argv[2] || process.env.QA_BASE || "http://localhost:3200/";
 const skipPreloader = process.argv.includes("--skip-preloader");
 const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
 const context = await browser.newContext({ viewport: { width: 390, height: 844 } });

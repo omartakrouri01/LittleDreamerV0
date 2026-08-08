@@ -7,7 +7,7 @@ import { CloudDivider } from "../deco/CloudDivider";
 export function RevealDivider({ className }: { className?: string }) {
   const { ref, revealed } = useReveal<HTMLDivElement>();
   return (
-    <div ref={ref} className={`overflow-hidden ${className ?? ""}`}>
+    <div ref={ref} data-reveal className={`overflow-hidden ${className ?? ""}`}>
       <div
         className={`origin-right transition-transform duration-700 ease-out ${revealed ? "scale-x-100" : "scale-x-0"}`}
         style={{ transitionDelay: "150ms" }}
