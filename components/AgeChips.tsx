@@ -38,7 +38,7 @@ export function AgeChips({ active, onSelect, gridId }: AgeChipsProps) {
               className="relative h-16 w-24 shrink-0 transition-transform duration-150 active:scale-[0.96]"
             >
               <Cloud variant={VARIANTS[i % VARIANTS.length]} className={`absolute inset-0 h-full w-full drop-shadow-sm ${isActive ? "text-berry" : "text-cloud"}`} />
-              <span className={`relative flex h-full items-center justify-center pb-1 text-sm font-bold ${isActive ? "text-white" : "text-plum"}`}>
+              <span className={`relative flex h-full translate-y-[6px] items-center justify-center text-sm font-bold ${isActive ? "text-white" : "text-plum"}`}>
                 {bucket.label}
               </span>
             </button>

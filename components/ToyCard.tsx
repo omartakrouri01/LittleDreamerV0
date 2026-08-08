@@ -32,7 +32,7 @@ interface ToyCardProps {
 export function ToyCard({ toy, onOpen, priority = false, className, index = 0 }: ToyCardProps) {
   const rotation = rotationForId(toy.id);
   const { ref, revealed } = useReveal<HTMLDivElement>();
-  const delayMs = Math.min(index * 60, 300);
+  const delayMs = Math.min(index * 45, 180);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter" || e.key === " ") {
@@ -57,8 +57,8 @@ export function ToyCard({ toy, onOpen, priority = false, className, index = 0 }:
       onKeyDown={handleKeyDown}
       aria-label={toy.name}
       style={{ transitionDelay: revealed ? `${delayMs}ms` : "0ms" }}
-      className={`group relative flex cursor-pointer flex-col overflow-hidden rounded-3xl bg-cloud shadow-sm transition-[opacity,transform,box-shadow] duration-500 ease-out hover:-translate-y-1 hover:shadow-lg ${
-        revealed ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+      className={`group relative flex cursor-pointer flex-col overflow-hidden rounded-3xl bg-cloud shadow-sm transition-[opacity,transform,box-shadow] duration-[400ms] ease-out hover:-translate-y-1 hover:shadow-lg ${
+        revealed ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
       } ${className ?? ""}`}
     >
       <div className="relative aspect-square w-full overflow-hidden bg-cloud p-3">
@@ -71,15 +71,7 @@ export function ToyCard({ toy, onOpen, priority = false, className, index = 0 }:
           priority={priority}
           loading={priority ? undefined : "lazy"}
         />
-        <PriceBadge
-          price={toy.price}
-          rotation={rotation}
-          revealed={revealed}
-          settleDelayMs={delayMs + 120}
-          className="absolute top-2 start-2 z-10"
-        />
-
-        {/* Star sparkle on hover, near the opposite corner from the price badge. */}
+        {/* Star sparkle on hover. */}
         <span className="pointer-events-none absolute bottom-3 end-3 text-gold opacity-0 transition-[opacity,transform] duration-300 group-hover:opacity-100 group-hover:scale-100 scale-75">
           <Star className="h-4 w-4" />
         </span>
@@ -97,7 +89,12 @@ export function ToyCard({ toy, onOpen, priority = false, className, index = 0 }:
             {toy.category}
           </span>
         )}
-        <h3 className="line-clamp-1 font-display text-base font-bold text-plum">{toy.name}</h3>
+        {/* Name and price share a row: in RTL the name reads from the right and
+            the badge sits at the end, i.e. to its left. */}
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="line-clamp-1 min-w-0 flex-1 font-display text-base font-bold text-plum">{toy.name}</h3>
+          <PriceBadge price={toy.price} rotation={rotation} revealed={revealed} settleDelayMs={delayMs + 120} />
+        </div>
         <p className="text-xs text-plum/70">
           {formatAgeRange(toy.ageMin, toy.ageMax)}
           {toy.sex ? ` · ${toy.sex}` : ""}

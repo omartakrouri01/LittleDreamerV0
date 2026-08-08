@@ -24,11 +24,11 @@ export function Header() {
       }`}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2.5 sm:px-6">
-        {/* min-h-11: the mark is landscape (44x36), so the link needs its own
-            height to stay a 44px tap target. */}
-        <a href="#" aria-label="الصفحة الرئيسية" className="inline-flex min-h-11 items-center">
+        {/* Not a link: this is a single-page shop, so an anchor here only ever
+            jumped to the top and read as a broken button. */}
+        <span className="inline-flex min-h-11 items-center">
           <LogoMark width={44} className="w-11" priority />
-        </a>
+        </span>
         <a
           href={INSTAGRAM_URL}
           target="_blank"

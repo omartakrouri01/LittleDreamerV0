@@ -28,13 +28,13 @@ export function PriceBadge({ price, rotation = 0, className, revealed = true, se
   };
   return (
     <div
-      className={`relative h-[38px] w-[70px] drop-shadow-[0_3px_6px_rgba(62,34,55,0.25)] transition-transform duration-500 ease-out ${className ?? ""}`}
+      className={`relative h-[46px] w-[86px] shrink-0 drop-shadow-[0_3px_6px_rgba(62,34,55,0.25)] transition-transform duration-500 ease-out ${className ?? ""}`}
       style={style}
     >
       <svg viewBox="0 0 140 76" className="absolute inset-0 h-full w-full" aria-hidden="true">
         <path d={CLOUD_PATH} fill="var(--cloud)" stroke="var(--gold)" strokeWidth="4" strokeLinejoin="round" />
       </svg>
-      <span className="relative flex h-full w-full items-center justify-center pb-1 text-[13px] font-bold text-plum">
+      <span className="relative flex h-full w-full items-center justify-center pb-1 text-[15px] font-bold text-plum">
         <bdi className="price-isolate">
           {price % 1 === 0 ? price : price.toFixed(2)}
           {CURRENCY}

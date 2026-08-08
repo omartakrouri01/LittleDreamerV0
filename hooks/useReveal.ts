@@ -9,15 +9,30 @@ function prefersReducedMotion(): boolean {
   return reducedMotionQuery.matches;
 }
 
+interface RevealOptions extends IntersectionObserverInit {
+  /**
+   * Keep animating every time the element crosses the viewport instead of
+   * firing once. Default true — the shop wants the page to feel alive on
+   * every scroll, not only on first load.
+   */
+  repeat?: boolean;
+}
+
 /**
- * Fires once when the element scrolls into view, then stops observing.
- * Returns `true` immediately (no animation) under prefers-reduced-motion.
- * One shared IntersectionObserver-based hook used for every section/word/
- * card reveal in the scroll animation system.
+ * Drives the scroll reveal animations. By default it keeps observing, so an
+ * element animates out as it leaves the viewport and back in when it returns —
+ * scrolling up gives the same motion as scrolling down.
+ *
+ * Returns `true` immediately and never animates under prefers-reduced-motion.
  */
-export function useReveal<T extends HTMLElement>(options?: IntersectionObserverInit) {
+export function useReveal<T extends HTMLElement>(options?: RevealOptions) {
   const ref = useRef<T | null>(null);
   const [revealed, setRevealed] = useState(false);
+
+  const { repeat = true, ...observerInit } = options ?? {};
+  // Primitive deps so callers can pass an inline object without re-subscribing
+  // the observer on every render.
+  const { threshold, root, rootMargin } = observerInit;
 
   useEffect(() => {
     if (prefersReducedMotion()) {
@@ -32,15 +47,21 @@ export function useReveal<T extends HTMLElement>(options?: IntersectionObserverI
         for (const entry of entries) {
           if (entry.isIntersecting) {
             setRevealed(true);
-            observer.unobserve(entry.target);
+            if (!repeat) observer.unobserve(entry.target);
+          } else if (repeat) {
+            setRevealed(false);
           }
         }
       },
-      { threshold: 0.15, rootMargin: "0px 0px -10% 0px", ...options },
+      {
+        threshold: threshold ?? 0.15,
+        rootMargin: rootMargin ?? "0px 0px -10% 0px",
+        root: root ?? null,
+      },
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, [options]);
+  }, [repeat, threshold, root, rootMargin]);
 
   return { ref, revealed };
 }

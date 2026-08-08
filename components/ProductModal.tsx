@@ -153,6 +153,35 @@ export function ProductModal({ toy, onClose, returnFocusRef }: ProductModalProps
             <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-blush">
               <Image src={cldUrl(images[activeImage], 1000)} alt={toy.name} fill sizes="(max-width: 640px) 90vw, 45vw" className="object-contain p-4" />
               <PriceBadge price={toy.price} className="absolute top-3 start-3 z-10" />
+
+              {/* Arrows sit on the image itself so the photos can be browsed
+                  without going down to the thumbnails. `start`/`end` are the
+                  logical edges: under RTL, start is the right-hand side. */}
+              {images.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setActiveImage((i) => (i + 1) % images.length)}
+                    aria-label="الصورة التالية"
+                    className="absolute top-1/2 start-2 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-cloud/85 text-lg text-plum shadow-md backdrop-blur-sm transition-transform hover:bg-cloud active:scale-90"
+                  >
+                    ›
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveImage((i) => (i - 1 + images.length) % images.length)}
+                    aria-label="الصورة السابقة"
+                    className="absolute top-1/2 end-2 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-cloud/85 text-lg text-plum shadow-md backdrop-blur-sm transition-transform hover:bg-cloud active:scale-90"
+                  >
+                    ‹
+                  </button>
+                  <span className="absolute inset-x-0 bottom-2 z-20 mx-auto w-fit rounded-full bg-plum/55 px-2.5 py-0.5 text-[11px] font-medium text-white">
+                    <bdi className="price-isolate">
+                      {activeImage + 1}/{images.length}
+                    </bdi>
+                  </span>
+                </>
+              )}
             </div>
             {images.length > 1 && (
               <div className="mt-3 flex gap-2 overflow-x-auto">

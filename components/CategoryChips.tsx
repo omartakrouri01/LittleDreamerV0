@@ -13,11 +13,10 @@ interface CategoryChipsProps {
 }
 
 export function CategoryChips({ categories, active, onSelect, gridId }: CategoryChipsProps) {
-  // With a single category there is nothing to choose between, so the heading,
-  // divider and lone chip are ~150px of height that filters nothing. Mirrors the
-  // outdoor shelf, which already hides itself when there's only one place value.
-  // Reappears on its own once the sheet has real category variety.
-  if (categories.length < 2) return null;
+  // Only hidden when the sheet yields no categories at all. (It briefly hid
+  // below two, which made the whole section disappear while the catalogue had
+  // a single category — the shop owner wants it visible regardless.)
+  if (categories.length < 1) return null;
 
   function handleSelect(name: string) {
     onSelect(name === active ? "" : name);
